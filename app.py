@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 import random
+from fastapi.responses import HTMLResponse
 
 app = FastAPI()
 
@@ -12,12 +13,16 @@ pets = [
 
 moods = ["happy 😄", "sleepy 😴", "excited 🤩", "hungry 🍪"]
 
-@app.get("/")
+@app.get("/", response_class=HTMLResponse)
 def home():
+    with open("index.html", "r") as f:
+        return f.read()
+    
+@app.get("/api/mood")
+def mood():
     pet = random.choice(pets)
     mood = random.choice(moods)
     return {"message": f"{pet['emoji']} {pet['name']} is feeling {mood} today!"}
-
 
 @app.get("/pet")
 def get_pet():
